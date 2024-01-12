@@ -33,7 +33,7 @@ class _RecipesScreenState extends State<RecipesScreen> {
               child: Text('칵테일입니다', style: Theme.of(context).textTheme.headline6),
             ),
             Container(
-              height: 180.0, // 리스트 높이 설정
+              height: 180.0, // 리스트 높이
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (BuildContext context, int index) {
@@ -53,7 +53,7 @@ class _RecipesScreenState extends State<RecipesScreen> {
               child: Text('내가 만든 칵테일입니다', style: Theme.of(context).textTheme.headline6),
             ),
             Container(
-              height: 180.0, // 리스트 높이 설정
+              height: 180.0, // 리스트 높이
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (BuildContext context, int index) {

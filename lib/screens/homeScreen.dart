@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: Icon(Icons.menu),
             onPressed: () {
-              // 메뉴 버튼
+              Scaffold.of(context).openEndDrawer();
             },
           ),
         ],
@@ -49,6 +49,27 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
+      ),
+      endDrawer: Drawer( // 오른쪽에서 나오는 드로어
+        child: ListView(
+          children: [
+            ListTile(
+              title: Text('로그인/회원가입'),
+              leading: Icon(Icons.login),
+              onTap: () {
+                // 로그인/회원가입 로직 추가
+              },
+            ),
+            ListTile(
+              title: Text('칵테일 보관함'),
+              leading: Icon(Icons.collections),
+              onTap: () {
+                // 칵테일 보관함 페이지로 이동
+              },
+            ),
+            // 여기에 추가적인 메뉴 아이템들을 추가할 수 있습니다.
+          ],
+        ),
       ),
     );
   }

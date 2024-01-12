@@ -1,9 +1,6 @@
-// 파일: lib/screens/create_screen.dart
-
 import 'package:flutter/material.dart';
 
 class CreateScreen extends StatefulWidget {
-  // const CreateScreen({Key? key}) : super(key: key);
 
   @override
   _CreateScreenState createState() => _CreateScreenState();
