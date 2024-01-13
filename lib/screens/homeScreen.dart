@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '/loginPage.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -14,11 +15,13 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text('이것이 앱 이름입니다'),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openEndDrawer();
-            },
+          Builder(
+            builder: (context) => IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+              },
+            ),
           ),
         ],
       ),
@@ -57,7 +60,10 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Text('로그인/회원가입'),
               leading: Icon(Icons.login),
               onTap: () {
-                // 로그인/회원가입 로직 추가
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
               },
             ),
             ListTile(
