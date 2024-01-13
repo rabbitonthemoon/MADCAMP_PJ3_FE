@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'package:pj3/signupPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class LoginPage extends StatefulWidget {
   @override
@@ -11,8 +13,11 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  bool _authenticateUser(String username, String password){
-    return username == 'testuser' && password == 'testpw';
+  Future<bool> _authenticateUser(String username, String password) async {
+  final prefs = await SharedPreferences.getInstance();
+  String storedUsername = prefs.getString('username') ?? '';
+  String storedPassword = prefs.getString('password') ?? '';
+  return username == storedUsername && password == storedPassword;
   }
 
   @override
@@ -37,8 +42,8 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: () {
-                if (_authenticateUser(_idController.text, _passwordController.text)) {
+              onPressed: () async {
+                if (await _authenticateUser(_idController.text, _passwordController.text)) {
                   // 로그인 성공 시 처리
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) => MainScreen(), // HomeScreen 페이지로 이동

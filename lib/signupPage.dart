@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -43,8 +44,11 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: () {
-                // 회원가입 로직 작성하기!
+              onPressed: () async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setString('username', _idController.text);
+                await prefs.setString('password', _passwordController.text);
+
                 Fluttertoast.showToast(
                   msg: "회원가입 완료!",
                   toastLength: Toast.LENGTH_SHORT,
