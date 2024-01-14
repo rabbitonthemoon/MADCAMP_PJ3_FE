@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
+import 'package:pj3/main.dart';
 import 'package:pj3/signupPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:pj3/services/authenticationService.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -12,12 +13,46 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final AuthenticationService _authService = AuthenticationService();
 
-  Future<bool> _authenticateUser(String username, String password) async {
-  final prefs = await SharedPreferences.getInstance();
-  String storedUsername = prefs.getString('username') ?? '';
-  String storedPassword = prefs.getString('password') ?? '';
-  return username == storedUsername && password == storedPassword;
+  void _attemptLogin() async {
+    bool result = await _authService.loginUser(
+      _idController.text,
+      _passwordController.text,
+    );
+    if (result) {
+      Fluttertoast.showToast(
+        msg: "로그인 성공!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => MainScreen()), // 메인 화면으로 이동, 클래스명 확인 필요
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("로그인 실패"),
+            content: Text("등록되지 않은 아이디이거나 아이디 또는 비밀번호를 잘못 입력했습니다."),
+            actions: <Widget>[
+              TextButton(
+                child: Text("닫기"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -42,33 +77,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: () async {
-                if (await _authenticateUser(_idController.text, _passwordController.text)) {
-                  // 로그인 성공 시 처리
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => MainScreen(), // HomeScreen 페이지로 이동
-                  ));
-                } else {
-                  // 로그인 실패 시 처리
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: new Text("로그인 실패"),
-                        content: new Text("등록되지 않은 아이디이거나 아이디 또는 비밀번호를 잘못 입력했습니다."),
-                        actions: <Widget>[
-                          new TextButton(
-                            child: new Text("Close"),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
-              },
+              onPressed: _attemptLogin,
               child: Text('로그인'),
             ),
             TextButton(
