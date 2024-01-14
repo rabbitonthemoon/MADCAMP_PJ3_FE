@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '/loginPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -7,7 +8,38 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<String> maincocktail = List.generate(20, (index) => 'Cocktail ${index + 1}'); //리스트 길이 임의로 넣음 일단 20
+  final List<String> maincocktail = List.generate(20, (index) => 'Cocktail ${index + 1}');
+  String _username = "게스트";
+  bool _isLoggedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+  }
+
+  _loadUserInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+      _username = prefs.getString('userName') ?? "게스트";
+    });
+  }
+
+  _logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false);
+    await prefs.remove('userName');
+
+    setState(() {
+      _isLoggedIn = false;
+      _username = "게스트";
+    });
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Flexible(
             flex: 1, // 상단 절반
             child: Container(
-              // 다른 위젯을 추가 가능
+              // 다른 위젯
             ),
           ),
           Flexible(
@@ -40,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
               scrollDirection: Axis.horizontal,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  width: 160.0, // 너비
+                  width: 160.0,
                   child: Card(
                     child: Center(
                       // child: Text('Drink $index'),
@@ -57,13 +89,19 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           children: [
             ListTile(
-              title: Text('로그인/회원가입'),
-              leading: Icon(Icons.login),
+              // title: Text('로그인/회원가입'),
+              // leading: Icon(Icons.login),
+              title: Text(_isLoggedIn ? '$_username 님' : '로그인/회원가입'),
+              leading: Icon(_isLoggedIn ? Icons.person : Icons.login),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
+                if (!_isLoggedIn) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                } else {
+                  _logout();
+                }
               },
             ),
             ListTile(
@@ -73,7 +111,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 // 칵테일 보관함 페이지로 이동
               },
             ),
-            // 여기에 추가적인 메뉴 아이템들을 추가할 수 있습니다.
           ],
         ),
       ),

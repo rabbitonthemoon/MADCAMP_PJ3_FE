@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pj3/main.dart';
+import 'package:pj3/screens/homeScreen.dart';
 import 'package:pj3/signupPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -21,6 +22,10 @@ class _LoginPageState extends State<LoginPage> {
       _passwordController.text,
     );
     if (result) {
+      // String userName = await _authService.getUserName();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      // await prefs.setString('userName', userName);
+
       Fluttertoast.showToast(
         msg: "로그인 성공!",
         toastLength: Toast.LENGTH_SHORT,
@@ -32,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => MainScreen()), // 메인 화면으로 이동, 클래스명 확인 필요
+        MaterialPageRoute(builder: (context) => HomeScreen()), // 메인 화면으로 이동
       );
     } else {
       showDialog(
