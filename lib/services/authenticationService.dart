@@ -83,6 +83,7 @@ class Cocktail {
   final String ingredients;
   final String recipe;
   final int recommend;
+  final String cockimg;
 
   Cocktail({
     required this.name,
@@ -90,6 +91,7 @@ class Cocktail {
     required this.ingredients,
     required this.recipe,
     required this.recommend,
+    required this.cockimg,
   });
 
   factory Cocktail.fromJson(Map<String, dynamic> json) {
@@ -99,6 +101,7 @@ class Cocktail {
       ingredients: json['ingredients'],
       recipe: json['recipe'],
       recommend: json['recommend'] ?? 0,
+      cockimg: json['cockimg'],
     );
   }
 }
