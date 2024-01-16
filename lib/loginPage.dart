@@ -17,6 +17,21 @@ class _LoginPageState extends State<LoginPage> {
   final AuthenticationService _authService = AuthenticationService();
 
   void _attemptLogin() async {
+    String id = _idController.text;
+    String password = _passwordController.text;
+
+    if (id.isEmpty || password.isEmpty) {
+      Fluttertoast.showToast(
+        msg: "ID와 비밀번호를 모두 입력해주세요",
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      return;
+    }
+
     bool result = await _authService.loginUser(
       _idController.text,
       _passwordController.text,
@@ -59,39 +74,128 @@ class _LoginPageState extends State<LoginPage> {
       );
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('로그인'),
+        backgroundColor: Color(0xFF241D49),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Color(0xFFFBEAFC),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextFormField(
-              controller: _idController,
-              decoration: InputDecoration(labelText: 'ID'),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: Color(0xFF241D49),
+        child: Stack(
+          children: [
+            // ID!!!!
+            Positioned(
+              left: 80,
+              top: 250,
+              child: Container(
+                width: 200,
+                height: 36,
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                alignment: Alignment.centerLeft,
+                decoration: ShapeDecoration(
+                  color: Color(0xFF58487E),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: TextFormField(
+                  controller: _idController,
+                  style: TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: 'ID',
+                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 12),
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
             ),
-            TextFormField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: '비밀번호'),
-              obscureText: true,
+            // 비밀번호!!!!
+            Positioned(
+              left: 80,
+              top: 298,
+              child: Container(
+                width: 200,
+                height: 36,
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                alignment: Alignment.centerLeft,
+                decoration: ShapeDecoration(
+                  color: Color(0xFF58487E),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: TextFormField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  style: TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: '비밀번호',
+                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 12),
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
             ),
-            SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: _attemptLogin,
-              child: Text('로그인'),
+            // 로그인!!!!
+            Positioned(
+              left: 150,
+              top: 346,
+              child: GestureDetector(
+                onTap: _attemptLogin,
+                child: Container(
+                  width: 60,
+                  height: 34,
+                  decoration: ShapeDecoration(
+                    color: Color(0xFF2E2456),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 1, color: Color(0x7FFBEAFC)),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    '로그인',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ),
             ),
-            TextButton(
-              onPressed: () {
+            // 회원가입!!!!
+            Positioned(
+              left: 158,
+              top: 392,
+              child: InkWell(
+              onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => SignUpPage()),
+                MaterialPageRoute(builder: (context) => SignUpPage()),
                 );
-              },
-              child: Text('회원가입'),
+                },
+                child: Text(
+                  '회원가입',
+                  style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
             ),
           ],
         ),

@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class AuthenticationService {
-  final String _baseUrl = 'http://143.248.226.40:8080';
+  final String _baseUrl = 'http://143.248.226.153:8080';
 
   Future<bool> loginUser(String userid, String password) async {
     final url = Uri.parse('$_baseUrl/login');
@@ -83,7 +83,7 @@ class Cocktail {
   final String ingredients;
   final String recipe;
   final int recommend;
-  final String cockimg;
+  final String cockImg;
 
   Cocktail({
     required this.name,
@@ -91,7 +91,7 @@ class Cocktail {
     required this.ingredients,
     required this.recipe,
     required this.recommend,
-    required this.cockimg,
+    required this.cockImg,
   });
 
   factory Cocktail.fromJson(Map<String, dynamic> json) {
@@ -101,7 +101,7 @@ class Cocktail {
       ingredients: json['ingredients'],
       recipe: json['recipe'],
       recommend: json['recommend'] ?? 0,
-      cockimg: json['cockimg'],
+      cockImg: json['cockImg'],
     );
   }
 }

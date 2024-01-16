@@ -38,13 +38,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        // title: Text('Your Pocket Bartender', style: TextStyle(fontSize: 24)),
-        backgroundColor: Color(0xFF241D49), 
+        backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
           IconButton(
-            icon: Icon(Icons.menu, size: 30.0),
+            icon: Icon(Icons.menu, size: 30.0, color: Color(0xFFFBEAFC)),
             onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
           ),
         ],
@@ -62,17 +62,19 @@ class _HomeScreenState extends State<HomeScreen> {
           Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 100),
                 Padding(
                   padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top, left: 20),
                   child: Text(
-                    'Your Pocket Bartender',
+                    'Your \nPocket Bartender',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Color(0xFFFBEAFC),
                       fontSize: 24.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
+                // 여기부터
                 Flexible(
                   flex: 1,
                   child: ListView.builder(
@@ -102,29 +104,22 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SizedBox(
           width: 260,
           child: Drawer(
-            child: Column(
-              children: [
-                Expanded(
-                  child: Container(
-                    // width: 260,
-                    // height: 640,
-                    color: Color(0xFF241D49),
+            child: Container(
+                color: Color(0xFF241D49),
                     child: Column(
                       children: [
                         Container(
-                          // width: 260,
-                          // height: 148,
                           decoration: BoxDecoration(
                             color: Color(0x9914102A),
                             borderRadius: BorderRadius.only(topLeft: Radius.circular(24)),
                           ),
-                          height: 178,
+                          height: 100,
                           child: Padding(
-                            padding: const EdgeInsets.all(16.0),
+                            padding: const EdgeInsets.only(top: 24.0, left: 16.0, right: 16.0),
                             child: Align(
                               alignment: Alignment.topLeft,
                               child: IconButton(
-                                icon: Icon(Icons.close, color: Colors.white),
+                                icon: Icon(Icons.close, color: Color(0xFFFBEAFC)),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
@@ -132,34 +127,27 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        
-                        ListTile(
-                          title: Text(_isLoggedIn ? '$_username 님' : '로그인/회원가입', style: TextStyle(color: Colors.white)),
-                          // leading: Icon(_isLoggedIn ? Icons.person : Icons.login, color: Colors.white),
-                          onTap: () {
-                            if (!_isLoggedIn) {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
-                            } else {
-                              _logout();
-                            }
-                          },
-                        ),
-                        ListTile(
-                          title: Text('칵테일 보관함', style: TextStyle(color: Colors.white)),
-                          leading: Icon(Icons.collections, color: Colors.white),
-                          onTap: () {
-                            // 칵테일 보관함 페이지로 이동
-                          },
-                        ),
-                      ],
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color(0x9914102A),
+                    ),
+                    child: ListTile(
+                      title: Text(_isLoggedIn ? '$_username 님' : '로그인/회원가입', style: TextStyle(color: Colors.white)),
+                      onTap: () {
+                        if (!_isLoggedIn) {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                        } else {
+                          _logout();
+                        }
+                      },
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-      )
+      ),
     );
   }
 }

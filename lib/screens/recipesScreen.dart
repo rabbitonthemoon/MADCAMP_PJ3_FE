@@ -8,7 +8,6 @@ class RecipesScreen extends StatefulWidget {
 
 class _RecipesScreenState extends State<RecipesScreen> with SingleTickerProviderStateMixin {
   // 임의의 데이터 리스트
-  // final List<String> cocktail = List.generate(10, (index) => 'Cocktail ${index + 1}');
   late Future<List<Cocktail>> _cocktails;
   late TabController _tabController;
   final AuthenticationService _authService = AuthenticationService();
@@ -32,10 +31,11 @@ class _RecipesScreenState extends State<RecipesScreen> with SingleTickerProvider
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        // extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Color(0xFF241D49),
           elevation:  0,
+          // 여기부터
+          titleSpacing: 0,
           title: TabBar(
             controller: _tabController,
             tabs: [
@@ -43,13 +43,16 @@ class _RecipesScreenState extends State<RecipesScreen> with SingleTickerProvider
               Tab(text: 'MY'),
             ],
             labelColor: Colors.white,
+            labelStyle: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
             unselectedLabelColor: Color(0xFFB8B8B8),
             indicatorColor: Colors.transparent,
-            // indicatorPadding: EdgeInsets.zero,
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.search),
+              icon: Icon(Icons.search, color: Color(0xFFFBEAFC)),
               onPressed: () {},
             ),
           ],
@@ -108,7 +111,7 @@ class _RecipesScreenState extends State<RecipesScreen> with SingleTickerProvider
                     children: <Widget>[
                       Expanded(
                         child: Image.network(
-                          cocktail.cockimg,
+                          cocktail.cockImg,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -152,34 +155,6 @@ Widget _buildMyCocktailsTab() {
     );
   }
 
-
-
-//   Widget _buildMyCocktailsTab() {
-//   return Padding( 
-//     padding: EdgeInsets.symmetric(horizontal: 2), 
-//     child: GridView.builder(
-//       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//         crossAxisCount: 2,
-//         childAspectRatio: (140 / 160),
-//         crossAxisSpacing: 8,
-//         mainAxisSpacing: 8, 
-//       ),
-//       itemCount: mycocktail.length,
-//       itemBuilder: (BuildContext context, int index) {
-//         return Card(
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(4), // 코너 반경 설정
-//           ),
-//           child: Center(
-//             child: Text(mycocktail[index]),
-//           ),
-//         );
-//       },
-//     ),
-//   );
-// }
-
-
   void _showCocktailDetails(BuildContext context, Cocktail cocktail) {
     showDialog(
       context: context,
@@ -189,7 +164,7 @@ Widget _buildMyCocktailsTab() {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Image.network(cocktail.cockimg, fit: BoxFit.cover),
+                Image.network(cocktail.cockImg, fit: BoxFit.cover),
                 Text('설명: ${cocktail.explanation}'),
                 Text('재료: ${cocktail.ingredients}'),
                 Text('제조법: ${cocktail.recipe}'),
