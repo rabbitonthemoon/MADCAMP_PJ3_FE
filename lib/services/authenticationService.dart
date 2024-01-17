@@ -1,8 +1,9 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
 
 class AuthenticationService {
-  final String _baseUrl = 'http://143.248.226.153:8080';
+  final String _baseUrl = 'http://143.248.226.38:8080';
 
   Future<bool> loginUser(String userid, String password) async {
     final url = Uri.parse('$_baseUrl/login');
@@ -50,25 +51,32 @@ class AuthenticationService {
     }
   }
 
-  Future<String> getUserName() async {
-    
-    // 사용자 이름 가져오는 API
-    final url = Uri.parse('$_baseUrl/user/userid');
+  Future<String> getUserById(String name) async {
+  final url = Uri.parse('$_baseUrl/user/$name');
+  try {
     final response = await http.get(url);
-
     if (response.statusCode == 200) {
-      return jsonDecode(response.body)['name'];
+      var decodedResponse = utf8.decode(response.bodyBytes);
+      return jsonDecode(decodedResponse)['name'];
     } else {
-      throw Exception('실패');
+      // Log the response body for debugging
+      print('Error response body: ${response.body}');
+      throw Exception('Failed to fetch user name. Status Code: ${response.statusCode}');
     }
+  } on SocketException {
+    throw Exception('No Internet connection.');
+  } on HttpException {
+    throw Exception("Couldn't find the user name.");
+  } on FormatException {
+    throw Exception("Bad response format.");
   }
+}
 
   Future<List<Cocktail>> fetchCocktails() async {
     final url = Uri.parse('$_baseUrl/cock/get-all');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      // List<dynamic> cocktailsJson = json.decode(response.body);
       List<dynamic> cocktailsJson = json.decode(utf8.decode(response.bodyBytes));
       return cocktailsJson.map((json) => Cocktail.fromJson(json)).toList();
     } else {
@@ -96,6 +104,35 @@ class Cocktail {
 
   factory Cocktail.fromJson(Map<String, dynamic> json) {
     return Cocktail(
+      name: json['name'],
+      explanation: json['explanation'],
+      ingredients: json['ingredients'],
+      recipe: json['recipe'],
+      recommend: json['recommend'] ?? 0,
+      cockImg: json['cockImg'],
+    );
+  }
+}
+
+class MyCocktail {
+  final String name;
+  final String explanation;
+  final String ingredients;
+  final String recipe;
+  final int recommend;
+  final String cockImg;
+
+  MyCocktail({
+    required this.name,
+    required this.explanation,
+    required this.ingredients,
+    required this.recipe,
+    required this.recommend,
+    required this.cockImg,
+  });
+
+  factory MyCocktail.fromJson(Map<String, dynamic> json) {
+    return MyCocktail(
       name: json['name'],
       explanation: json['explanation'],
       ingredients: json['ingredients'],

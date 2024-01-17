@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'screens/homeScreen.dart';
-import 'screens/recipesScreen.dart';
-import 'screens/createScreen.dart';
+import 'screens/myRecipesScreen.dart';
+import 'screens/cocktailsScreen.dart';
+import 'screens/mixScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,8 +35,8 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _widgetOptions = [
     RecipesScreen(),
-    HomeScreen(),
     CreateScreen(),
+    HomeScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -46,27 +46,55 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: _widgetOptions.elementAt(_selectedIndex),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Recipes',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.create),
-            label: 'Create',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+Widget build(BuildContext context) {
+  return Scaffold(
+    extendBody: true,
+    body: Center(
+      child: _widgetOptions.elementAt(_selectedIndex),
+    ),
+    bottomNavigationBar: ClipRRect(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(24),
+        topRight: Radius.circular(24),
       ),
-    );
-  }
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 6,
+              offset: const Offset(0, -1),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.book),
+              label: 'Cocktails',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: 'Best',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.local_bar),
+              label: 'My Recipes',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          selectedItemColor: Colors.amber,
+          unselectedItemColor: Colors.white.withOpacity(0.6), 
+          backgroundColor: Color(0xFF241D49), 
+          elevation: 0,
+          type: BottomNavigationBarType.fixed,
+          // selectedItemColor: Color(0xFFFBEAFC),
+          // backgroundColor: Color(0xE5241D49),
+          // elevation: 0,
+        ),
+      ),
+    ),
+  );
+}
 }

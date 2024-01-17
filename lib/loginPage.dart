@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pj3/main.dart';
-import 'package:pj3/screens/homeScreen.dart';
+import 'package:pj3/screens/myRecipesScreen.dart';
 import 'package:pj3/signupPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -37,9 +37,10 @@ class _LoginPageState extends State<LoginPage> {
       _passwordController.text,
     );
     if (result) {
-      // String userName = await _authService.getUserName();
+      String username = await _authService.getUserById(_idController.text);
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      // await prefs.setString('userName', userName);
+      await prefs.setBool('isLoggedIn', true);
+      await prefs.setString('userName', username); 
 
       Fluttertoast.showToast(
         msg: "로그인 성공!",
@@ -52,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => HomeScreen()), // 메인 화면으로 이동
+        MaterialPageRoute(builder: (context) => HomeScreen()), 
       );
     } else {
       showDialog(
@@ -75,131 +76,106 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFF241D49),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Color(0xFFFBEAFC),
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      backgroundColor: Color(0xFF241D49),
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back, color: Color(0xFFFBEAFC)),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      ),
+    ),
+    body: Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: Color(0xFF241D49),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildTextField(_idController, "ID"),
+            SizedBox(height: 8),
+            _buildTextField(_passwordController, "비밀번호", isPassword: true),
+            SizedBox(height: 20),
+            _buildLoginButton(),
+            SizedBox(height: 20),
+            _buildSignUpOption(),
+          ],
         ),
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Color(0xFF241D49),
-        child: Stack(
-          children: [
-            // ID!!!!
-            Positioned(
-              left: 80,
-              top: 250,
-              child: Container(
-                width: 200,
-                height: 36,
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                alignment: Alignment.centerLeft,
-                decoration: ShapeDecoration(
-                  color: Color(0xFF58487E),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                child: TextFormField(
-                  controller: _idController,
-                  style: TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    hintText: 'ID',
-                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 12),
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-            ),
-            // 비밀번호!!!!
-            Positioned(
-              left: 80,
-              top: 298,
-              child: Container(
-                width: 200,
-                height: 36,
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                alignment: Alignment.centerLeft,
-                decoration: ShapeDecoration(
-                  color: Color(0xFF58487E),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                child: TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  style: TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    hintText: '비밀번호',
-                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 12),
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-            ),
-            // 로그인!!!!
-            Positioned(
-              left: 150,
-              top: 346,
-              child: GestureDetector(
-                onTap: _attemptLogin,
-                child: Container(
-                  width: 60,
-                  height: 34,
-                  decoration: ShapeDecoration(
-                    color: Color(0xFF2E2456),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 1, color: Color(0x7FFBEAFC)),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    '로그인',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            // 회원가입!!!!
-            Positioned(
-              left: 158,
-              top: 392,
-              child: InkWell(
-              onTap: () {
-                Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => SignUpPage()),
-                );
-                },
-                child: Text(
-                  '회원가입',
-                  style: TextStyle(
-                  decoration: TextDecoration.underline,
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-            ),
-          ],
+    ),
+  );
+}
+
+Widget _buildTextField(TextEditingController controller, String hintText, {bool isPassword = false}) {
+  return Container(
+    width: 200,
+    height: 36,
+    padding: EdgeInsets.symmetric(horizontal: 16),
+    alignment: Alignment.centerLeft,
+    decoration: ShapeDecoration(
+      color: Color(0xFF58487E),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+    ),
+    child: TextFormField(
+      controller: controller,
+      obscureText: isPassword,
+      style: TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        hintText: hintText,
+        hintStyle: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 12),
+        border: InputBorder.none,
+      ),
+    ),
+  );
+}
+
+    Widget _buildLoginButton() {
+      return GestureDetector(
+      onTap: _attemptLogin,
+      child: Container(
+        width: 60,
+        height: 34,
+        decoration: ShapeDecoration(
+          color: Color(0xFF2E2456),
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 1, color: Color(0x7FFBEAFC)),
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          '로그인',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+          ),
         ),
       ),
     );
   }
+
+  Widget _buildSignUpOption() {
+      return InkWell(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => SignUpPage()),
+        );
+      },
+      child: Text(
+        '회원가입',
+        style: TextStyle(
+        decoration: TextDecoration.underline,
+        color: Colors.white,
+        fontSize: 12,
+        fontWeight: FontWeight.w400,
+      ),
+    ),
+  );
+}
 }
